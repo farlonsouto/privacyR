@@ -1,0 +1,70 @@
+setwd("/home/fsouto/ntnu/2024_spring/IT3010_metod/assignments/a2")
+
+# Load required libraries
+library(haven)
+
+# Read the codebook file if needed (not used in this analysis)
+# codebook <- readLines("quest_codebook.sps")
+
+# Read the CSV data file
+data <- read.csv("quest_data.csv")
+# str(data)
+
+# Filter data for exact science students
+exact_science_data <- subset(data, fieldOfStudy == "math" | fieldOfStudy == "infoTech" | fieldOfStudy == "engineering" | fieldOfStudy == "bioMedic")
+
+# Calculate awareness score (you may need to adjust this based on your specific criteria)
+# For simplicity, let's assume the sum of scores for relevant likelyCollectedData variables
+exact_science_data$awareness_score <- rowSums(subset(exact_science_data, select = c(likelyCollectedData.camera, likelyCollectedData.gps, likelyCollectedData.mobileNum, likelyCollectedData.searches, likelyCollectedData.myData, likelyCollectedData.name, likelyCollectedData.address, likelyCollectedData.shoeSize, likelyCollectedData.mobileDeviceType, likelyCollectedData.movementData, likelyCollectedData.choices, likelyCollectedData.eMail, likelyCollectedData.video, likelyCollectedData.paymentHistory, likelyCollectedData.contacts, likelyCollectedData.thirdPartiesActivity)))
+
+
+# Calculate awareness score dynamically
+calculate_awareness_score <- function(data) {
+  # Define keywords related to Google data collection
+  google_keywords <- c("terms", "videos", "views", "voice", "purchase", "people", 
+                       "activity", "chrome", "gps", "ip", "browsing", "services", 
+                       "information", "near", "wifi", "cell", "bluetooth")
+  
+  # Initialize awareness score vector
+  awareness_scores <- numeric(nrow(data))
+  
+  # Iterate over rows of data
+  for (i in seq_along(awareness_scores)) {
+    # Convert dataCollectGuess to lowercase for case-insensitive matching
+    guess <- tolower(data$dataCollectGuess[i])
+    # Calculate awareness score based on number of matching keywords
+    awareness_scores[i] <- sum(sapply(google_keywords, function(keyword) {
+      grepl(keyword, guess)
+    }))
+  }
+  
+  return(awareness_scores)
+}
+
+# Recode fieldOfStudy to create a binary variable indicating whether the student is an exact science student
+exact_science_data$is_exact_science <- ifelse(exact_science_data$fieldOfStudy %in% c("math", "infoTech", "engineering", "bioMedic"), "Exact Science", "Other")
+other_students_data$is_exact_science <- ifelse(other_students_data$fieldOfStudy %in% c("math", "infoTech", "engineering", "bioMedic"), "Exact Science", "Other")
+
+# Convert is_exact_science to a factor with two levels
+exact_science_data$is_exact_science <- factor(exact_science_data$is_exact_science, levels = c("Exact Science", "Other"))
+other_students_data$is_exact_science <- factor(other_students_data$is_exact_science, levels = c("Exact Science", "Other"))
+
+# Combine the is_exact_science variable from both datasets into a single vector
+combined_is_exact_science <- c(as.character(exact_science_data$is_exact_science), as.character(other_students_data$is_exact_science))
+
+# Check the levels of the combined is_exact_science variable
+levels(combined_is_exact_science)
+
+# Perform t-test comparing awareness scores between exact science students and others
+t_test_result <- t.test(awareness_score ~ is_exact_science, 
+                        data = rbind(exact_science_data, other_students_data))
+
+# Print t-test result
+print(t_test_result)
+
+
+# Explore the relationship between age and concern about data collection
+# For simplicity, let's use a scatter plot
+plot(data$ageGroup, data$likelyCollectedData.camera, xlab = "Age Group", ylab = "Concern about Data Collection", main = "Relationship between Age and Concern about Data Collection")
+
+# Further analyze the relationship between age and concern about data collection using correlation analysis or regression if needed

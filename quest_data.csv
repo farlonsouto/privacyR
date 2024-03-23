@@ -1,0 +1,45 @@
+$submission_id,$created,ageGroup,student,fieldOfStudy,googleAccountHolder,dataCollectGuess,likelyCollectedData.camera,likelyCollectedData.gps,likelyCollectedData.mobileNum,likelyCollectedData.searches,likelyCollectedData.myData,likelyCollectedData.name,likelyCollectedData.address,likelyCollectedData.shoeSize,likelyCollectedData.mobileDeviceType,likelyCollectedData.movementData,likelyCollectedData.choices,likelyCollectedData.eMail,likelyCollectedData.video,likelyCollectedData.paymentHistory,likelyCollectedData.contacts,likelyCollectedData.thirdPartiesActivity,problematicIfCollected.camera,problematicIfCollected.gps,problematicIfCollected.mobileNum,problematicIfCollected.search,problematicIfCollected.myData,problematicIfCollected.name,problematicIfCollected.address,problematicIfCollected.shoeSize,problematicIfCollected.mobileDeviceType,problematicIfCollected.movementData,problematicIfCollected.choices,problematicIfCollected.eMail,problematicIfCollected.video,problematicIfCollected.paymentHistory,problematicIfCollected.contacts,problematicIfCollected.thridPartiesActivity,$answer_time_ms
+30880710,2024-03-08'T'11:53:12,young,,,,jeg tror de samler inn gps lokasjon,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,20937
+31111536,2024-03-20'T'20:30:39,adult,no,,yes,"E-post, navnet mitt, telefonen min, adressen min",5,5,5,5,5,5,5,1,5,2,5,5,5,5,4,5,5,5,5,3,3,3,2,3,3,4,3,3,5,2,3,3,295289
+31111540,2024-03-20'T'20:31:19,adult,yes,infoTech,yes,"GPS, IP, date, time, type of product I buy, sites I navigate",1,5,2,4,4,2,1,3,4,3,5,2,5,2,1,5,5,5,5,3,3,5,5,3,3,1,2,5,5,5,5,3,945999
+31112065,2024-03-20'T'21:40:12,young,yes,infoTech,yes,"Posisjon
+Søkshistorikk
+Interesser
+Nettsideklikk
+Videoklikk
+Epost-data",1,5,5,5,5,5,5,4,5,2,4,5,5,5,5,5,5,4,2,3,2,1,4,1,1,3,5,5,4,5,5,5,284412
+31112099,2024-03-20'T'21:44:48,over30,yes,infoTech,yes,"Nevne, preferanse, kontakter",5,5,5,5,5,5,5,3,5,5,5,4,5,5,5,5,5,5,3,4,4,4,5,3,4,5,4,5,5,5,5,4,578885
+31114946,2024-03-21'T'09:48:02,young,no,,yes,Alt tbh,2,5,5,5,5,5,5,5,5,4,5,3,5,4,5,5,5,5,5,4,4,5,5,1,4,5,5,5,5,5,5,5,184016
+31115014,2024-03-21'T'09:49:26,young,yes,infoTech,yes,Alt jeg fører inn + geografiske data også sikkert,3,4,5,5,5,5,4,1,5,2,3,5,5,5,5,5,5,5,2,4,4,2,4,5,3,1,5,5,4,4,5,5,229940
+31115023,2024-03-21'T'09:49:38,young,yes,infoTech,yes,alt av søk og nettsider man besøker,3,4,5,5,5,5,5,3,5,4,2,5,5,5,4,5,5,4,3,2,3,3,3,5,2,4,5,3,3,3,3,3,209832
+31115089,2024-03-21'T'09:51:12,young,yes,infoTech,yes,Alle tiktoksa mine,5,5,5,5,5,5,5,3,5,5,5,5,5,5,5,5,5,5,5,4,5,4,5,1,3,5,5,4,3,5,4,3,207351
+31115167,2024-03-21'T'09:54:49,young,yes,langLitt,yes,"Alt mulig rart. Alder, kjønn, bosted, alle mine interesser og hobbyer, hvordan jeg bruker google osv…",5,5,5,5,5,5,5,4,5,5,5,5,5,5,5,5,5,3,2,2,2,2,3,2,2,3,5,4,2,3,3,2,189544
+31115632,2024-03-21'T'10:07:08,young,yes,math,yes,"Alder, bosted, hva slags type ting jeg søker på",2,4,4,5,5,5,5,1,5,2,3,4,5,4,4,5,5,4,4,2,1,1,4,2,2,4,5,4,4,4,3,3,289924
+31115921,2024-03-21'T'10:17:57,young,yes,engineering,yes,alt,4,4,4,5,5,5,3,3,4,5,5,4,4,4,4,4,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,108845
+31117280,2024-03-21'T'10:54:50,young,yes,teacher,yes,Alt jeg gjør fra Googles søkemotor,3,4,5,5,5,5,5,5,5,4,3,5,5,5,5,5,5,5,4,2,3,2,4,2,3,5,5,5,5,5,4,5,139998
+31117364,2024-03-21'T'10:57:51,young,yes,mediaComm,yes,Absolutt alt de kommer over,5,5,5,5,5,5,5,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,98286
+31117680,2024-03-21'T'11:05:23,young,yes,engineering,yes,"Søkehistorikk, posisjon, logghistorikk
+
+Relevant info for personlige reklamer",1,5,2,5,4,3,4,1,5,1,1,2,4,5,4,5,5,5,5,3,2,3,4,3,1,5,5,5,2,4,5,5,234742
+31118325,2024-03-21'T'11:32:00,young,yes,infoTech,yes,"Alt!
+Personinfomrasjon
+Lokasjon
+Navn 
+alder
+Alt av Internettaktivitet
+Brukernavn, Passord og kontoer
+Bankkort info
+Krysserefferert info fra andre kilder",5,5,5,5,5,5,5,5,5,5,2,5,5,5,5,5,5,5,3,5,4,4,3,5,3,4,5,5,4,5,5,5,257415
+31118410,2024-03-21'T'11:35:18,adult,yes,infoTech,yes,"Alder, kjønn, politiske meninger. Kort informasjon, bosted, land, IP, innloggings historikk (tid, sted, hvor lenge osv) Alt som er koblet opp til google, interesser, hva jeg handler, hva jeg ser på, søke historikk, ++",4,4,5,5,5,5,5,4,5,4,4,5,5,5,5,5,5,5,4,5,4,4,4,5,5,5,5,5,5,5,5,5,292644
+31119150,2024-03-21'T'12:11:00,young,yes,econoAdmin,yes,"Posisjon, søk, generell aktivitet på deres plattformer",2,4,5,3,5,5,4,4,5,4,3,5,2,4,3,5,5,4,4,5,3,3,4,2,2,2,4,1,5,5,5,3,174512
+31120522,2024-03-21'T'13:06:06,young,yes,infoTech,yes,"Apper jeg bruker, personinformasjon, handlingsmønstre på internett, nettsider jeg besøker",2,4,4,5,4,5,3,4,5,3,3,2,5,4,4,5,5,4,2,1,2,1,2,2,2,3,4,4,1,2,4,2,237273
+31120599,2024-03-21'T'13:09:59,young,yes,infoTech,yes,Alt jeg gjør og trykker på,5,5,5,5,5,5,5,5,5,5,2,3,5,5,5,5,3,5,5,3,3,3,3,5,3,3,3,5,4,5,5,5,302156
+31120845,2024-03-21'T'13:17:06,young,yes,infoTech,yes,"Persondata, cookies, search historikk, lokasjon",3,5,5,5,5,5,5,2,5,3,4,3,5,4,4,4,4,2,2,3,1,2,3,1,1,1,4,5,2,2,4,3,179878
+31122383,2024-03-21'T'14:19:08,adult,yes,engineering,yes,"Mail, interesser, atferd på nett",2,4,5,5,5,5,4,4,5,4,4,4,5,5,4,5,5,4,5,4,3,5,5,4,5,5,5,5,5,5,5,5,290908
+31124087,2024-03-21'T'15:39:05,young,yes,infoTech,yes,"Alt, søkehistorikk, adresser, posisjonsdata, preferanser, wi-fi aktivitet, reiseaktivitet, alt som kan brukes for å selge personaliserte annonser.",5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,4,2,1,1,1,1,2,2,1,1,5,4,1,4,4,4,137120
+31125566,2024-03-21'T'16:11:41,young,yes,engineering,yes,"Stedsdata, cookies,",4,5,4,4,5,5,4,2,5,3,2,4,5,4,3,5,5,3,3,4,2,2,3,3,2,4,4,4,4,3,5,3,286763
+31129938,2024-03-21'T'19:35:20,over30,no,,yes,"Name, age, sex, physical aspect, job, address, phone number, relatives, location, hobbies, personal interests, daily routine",5,5,5,5,5,5,5,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,662597
+31131580,2024-03-21'T'22:25:18,adult,yes,infoTech,yes,"Reisevaner, kjøpevaner, det som jeg søker på nettet, mine interesser.",4,3,2,5,5,1,2,3,5,5,3,2,5,4,4,4,4,5,5,4,3,5,5,2,2,2,4,5,2,4,5,3,323039
+31134990,2024-03-22'T'09:56:13,over30,no,,yes,"Location and movement patterns, shopping habits, political views based on the search history, other interests and hobbies, food preferences, travel patterns, etc",5,5,5,5,5,5,5,1,5,5,1,5,5,5,5,5,2,2,2,2,3,2,3,3,1,2,5,5,2,2,5,3,369692
+31135646,2024-03-22'T'10:08:46,adult,no,,yes,Alt de kan få tak i...,5,5,5,5,5,5,5,2,5,5,5,5,5,5,5,5,5,5,1,5,1,1,2,1,1,5,5,5,5,5,5,5,182970
+31137548,2024-03-22'T'10:49:20,adult,no,,yes,nett historikk,5,5,5,5,5,5,5,2,5,4,4,5,5,5,5,5,5,5,3,2,1,4,5,3,3,5,5,5,3,5,3,4,165509
