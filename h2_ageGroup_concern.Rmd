@@ -1,0 +1,89 @@
+setwd("/home/fsouto/ntnu/2024_spring/IT3010_metod/assignments/a2")
+
+# Load required libraries
+library(haven)
+library(dplyr)
+
+# Read the CSV data file
+data <- read.csv("quest_data.csv")
+
+# Function to calculate concernScore
+calculate_concern_score <- function(data) {
+  # Get the column names of concern sub-variables
+  problematic_cols <- grep("^concern\\.", names(data), value = TRUE)
+  
+  # Initialize concernScore vector
+  concern_score <- numeric(nrow(data))
+  
+  # Iterate over rows of data
+  for (i in seq_along(concern_score)) {
+    # Initialize score for the current entry
+    score <- 0
+    # Iterate over sub-variables
+    for (col in problematic_cols) {
+      # Add the value of the sub-variable to the score
+      score <- score + data[[col]][i]
+    }
+    # Assign the score to the corresponding entry in concern_score
+    concern_score[i] <- score
+  }
+  
+  return(concern_score)
+}
+
+# Calculate concernScore
+exact_science_data$concernScore <- calculate_concern_score(exact_science_data)
+
+# Recode ageGroup into numeric values
+exact_science_data$ageGroup <- factor(exact_science_data$ageGroup, levels = c("young", "adult", "over30"))
+
+# Check for missing or non-numeric values in concernScore
+missing_values_concern <- sum(is.na(exact_science_data$concernScore) | !is.numeric(exact_science_data$concernScore))
+
+if (missing_values_concern > 0) {
+  # Handle missing or non-numeric values (e.g., remove or impute)
+  # For example, you can remove rows with missing values:
+  exact_science_data <- na.omit(exact_science_data)
+}
+
+# Check for missing or non-numeric values in ageGroup
+missing_values_age <- sum(is.na(exact_science_data$ageGroup) | !is.numeric(exact_science_data$ageGroup))
+
+if (missing_values_age > 0) {
+  # Handle missing or non-numeric values (e.g., remove or impute)
+  # For example, you can remove rows with missing values:
+  exact_science_data <- na.omit(exact_science_data)
+}
+
+# Convert ageGroup to numeric values
+exact_science_data$ageGroup <- as.numeric(as.character(exact_science_data$ageGroup))
+
+# Check for missing or non-numeric values in ageGroup after conversion
+missing_values_age_after_conversion <- sum(is.na(exact_science_data$ageGroup) | !is.numeric(exact_science_data$ageGroup))
+
+if (missing_values_age_after_conversion > 0) {
+  # Handle missing or non-numeric values after conversion
+  # For example, you can remove rows with missing values:
+  exact_science_data <- na.omit(exact_science_data)
+}
+
+# Perform correlation analysis between ageGroup and concernScore
+correlation_ageGroup <- cor.test(exact_science_data$concernScore, exact_science_data$ageGroup)
+
+# Print correlation analysis result
+print(correlation_ageGroup)
+
+# Define custom labels for ageGroup
+age_group_labels <- c("young", "young adult", "over 30")
+
+# Plot for correlation between ageGroup and concernScore with custom labels
+plot(exact_science_data$ageGroup, exact_science_data$concernScore,
+     xlab = "Age Group", ylab = "Problematic If Collected Score",
+     main = "Problematic If Collected Score vs Age Group",
+     xaxt = "n")  # Prevent automatic drawing of x-axis ticks
+
+# Add custom x-axis ticks and labels
+axis(side = 1, at = 1:3, labels = age_group_labels)
+
+# Add linear regression line
+abline(lm(concernScore ~ ageGroup, data = exact_science_data), col = "blue")
