@@ -66,12 +66,9 @@ print(t_test_result)
 # Perform regression analysis between age and awareness score
 regression_model <- lm(awareness_score ~ ageGroup, data = exact_science_data)
 
-
 # Recode ageGroup into numeric values
 exact_science_data$ageGroup <- factor(exact_science_data$ageGroup, levels = c("young", "adult", "over30"))
 exact_science_data$ageGroup <- as.numeric(recode(exact_science_data$ageGroup, "1" = "young", "2" = "adult", "3" = "over30"))
-
-
 
 # Convert ageGroup column to numeric
 exact_science_data$ageGroup <- as.numeric(as.character(exact_science_data$ageGroup))
