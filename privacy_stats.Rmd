@@ -2,6 +2,7 @@ setwd("/home/fsouto/ntnu/2024_spring/IT3010_metod/assignments/a2")
 
 # Load required libraries
 library(haven)
+library(dplyr)
 
 # Read the codebook file if needed (not used in this analysis)
 # codebook <- readLines("quest_codebook.sps")
@@ -62,9 +63,96 @@ t_test_result <- t.test(awareness_score ~ is_exact_science,
 # Print t-test result
 print(t_test_result)
 
+# Perform correlation analysis between fieldOfStudy and Awareness
+correlation_fieldOfStudy <- cor.test(exact_science_data$awareness_score, as.numeric(exact_science_data$is_exact_science == "Exact Science"))
 
-# Explore the relationship between age and concern about data collection
-# For simplicity, let's use a scatter plot
-plot(data$ageGroup, data$likelyCollectedData.camera, xlab = "Age Group", ylab = "Concern about Data Collection", main = "Relationship between Age and Concern about Data Collection")
+# Print correlation analysis result
+print(correlation_fieldOfStudy)
 
-# Further analyze the relationship between age and concern about data collection using correlation analysis or regression if needed
+# Function to calculate problematicIfCollectedScore
+calculate_problematic_score <- function(data) {
+  # Get the column names of problematicIfCollected sub-variables
+  problematic_cols <- grep("^problematicIfCollected\\.", names(data), value = TRUE)
+  
+  # Initialize problematicIfCollectedScore vector
+  problematic_score <- numeric(nrow(data))
+  
+  # Iterate over rows of data
+  for (i in seq_along(problematic_score)) {
+    # Initialize score for the current entry
+    score <- 0
+    # Iterate over sub-variables
+    for (col in problematic_cols) {
+      # Add the value of the sub-variable to the score
+      score <- score + data[[col]][i]
+    }
+    # Assign the score to the corresponding entry in problematic_score
+    problematic_score[i] <- score
+  }
+  
+  return(problematic_score)
+}
+
+# Calculate problematicIfCollectedScore
+exact_science_data$problematicIfCollectedScore <- calculate_problematic_score(exact_science_data)
+
+# Check the first few entries of problematicIfCollectedScore
+head(exact_science_data$problematicIfCollectedScore)
+
+# Recode ageGroup into numeric values
+exact_science_data$ageGroup <- factor(exact_science_data$ageGroup, levels = c("young", "adult", "over30"))
+exact_science_data$ageGroup <- as.numeric(recode(exact_science_data$ageGroup, "1" = "young", "2" = "adult", "3" = "over30"))
+
+# Perform correlation analysis between ageGroup and problematicIfCollectedScore
+correlation_ageGroup <- cor.test(exact_science_data$problematicIfCollectedScore, exact_science_data$ageGroup)
+
+
+# Perform correlation analysis between ageGroup and problematicIfCollectedScore
+correlation_ageGroup <- cor.test(exact_science_data$problematicIfCollectedScore, exact_science_data$ageGroup)
+
+# Print correlation analysis result
+print(correlation_ageGroup)
+
+
+# Check for missing or non-numeric values in fieldOfStudy column
+missing_values_field <- sum(is.na(exact_science_data$fieldOfStudy) | !is.character(exact_science_data$fieldOfStudy))
+
+if (missing_values_field > 0) {
+  # Print the number of missing or non-numeric values
+  cat("Number of missing or non-numeric values in fieldOfStudy column:", missing_values_field, "\n")
+  
+  # Display rows with missing or non-numeric values in fieldOfStudy column
+  problematic_rows_field <- exact_science_data[is.na(exact_science_data$fieldOfStudy) | !is.character(exact_science_data$fieldOfStudy), ]
+  print(problematic_rows_field)
+} else {
+  # Convert fieldOfStudy column to factor
+  exact_science_data$fieldOfStudy <- factor(exact_science_data$fieldOfStudy)
+  
+  # Plot for correlation between fieldOfStudy and awareness_score
+  plot(exact_science_data$fieldOfStudy, exact_science_data$awareness_score,
+       xlab = "Field of Study", ylab = "Awareness Score",
+       main = "Awareness Score vs Field of Study")
+  
+  # Add linear regression line
+  abline(lm(awareness_score ~ fieldOfStudy, data = exact_science_data), col = "red")
+}
+
+
+# Define custom labels for ageGroup
+age_group_labels <- c("young", "young adult", "over 30")
+
+# Plot for correlation between ageGroup and problematicIfCollectedScore with custom labels
+plot(exact_science_data$ageGroup, exact_science_data$problematicIfCollectedScore,
+     xlab = "Age Group", ylab = "Problematic If Collected Score",
+     main = "Problematic If Collected Score vs Age Group",
+     xaxt = "n")  # Prevent automatic drawing of x-axis ticks
+
+# Add custom x-axis ticks and labels
+axis(side = 1, at = 1:3, labels = age_group_labels)
+
+# Add linear regression line
+abline(lm(problematicIfCollectedScore ~ ageGroup, data = exact_science_data), col = "blue")
+
+
+
+
