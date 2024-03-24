@@ -2,6 +2,7 @@ setwd("/home/fsouto/ntnu/2024_spring/IT3010_metod/assignments/a2")
 
 # Load required libraries
 library(haven)
+library(dplyr)
 
 # Read the codebook file if needed (not used in this analysis)
 # codebook <- readLines("quest_codebook.sps")
@@ -62,9 +63,33 @@ t_test_result <- t.test(awareness_score ~ is_exact_science,
 # Print t-test result
 print(t_test_result)
 
+# Perform regression analysis between age and awareness score
+regression_model <- lm(awareness_score ~ ageGroup, data = exact_science_data)
 
-# Explore the relationship between age and concern about data collection
-# For simplicity, let's use a scatter plot
-plot(data$ageGroup, data$likelyCollectedData.camera, xlab = "Age Group", ylab = "Concern about Data Collection", main = "Relationship between Age and Concern about Data Collection")
 
-# Further analyze the relationship between age and concern about data collection using correlation analysis or regression if needed
+# Recode ageGroup into numeric values
+exact_science_data$ageGroup <- factor(exact_science_data$ageGroup, levels = c("young", "adult", "over30"))
+exact_science_data$ageGroup <- as.numeric(recode(exact_science_data$ageGroup, "1" = "young", "2" = "adult", "3" = "over30"))
+
+
+
+# Convert ageGroup column to numeric
+exact_science_data$ageGroup <- as.numeric(as.character(exact_science_data$ageGroup))
+
+# Check for missing or non-numeric values in ageGroup column
+missing_values <- sum(is.na(exact_science_data$ageGroup) | !is.numeric(exact_science_data$ageGroup))
+
+if (missing_values > 0) {
+  # Print the number of missing or non-numeric values
+  cat("Number of missing or non-numeric values in ageGroup column:", missing_values, "\n")
+  
+  # Display rows with missing or non-numeric values in ageGroup column
+  problematic_rows <- exact_science_data[is.na(exact_science_data$ageGroup) | !is.numeric(exact_science_data$ageGroup), ]
+  print(problematic_rows)
+} else {
+  # Plot the regression line
+  plot(exact_science_data$ageGroup, exact_science_data$awareness_score, xlab = "Age Group", ylab = "Awareness Score", main = "Regression Analysis: Age vs Awareness Score")
+  
+  # Add regression line to the plot
+  abline(regression_model, col = "red")
+}
