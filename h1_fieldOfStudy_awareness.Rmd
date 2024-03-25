@@ -4,89 +4,45 @@ setwd("/home/fsouto/ntnu/2024_spring/IT3010_metod/assignments/a2")
 library(haven)
 library(dplyr)
 
-# Read the codebook file if needed (not used in this analysis)
-# codebook <- readLines("quest_codebook.sps")
-
 # Read the CSV data file
 data <- read.csv("quest_data.csv")
-# str(data)
+
+# Recode fieldOfStudy to create two groups: "exact sciences" and "others"
+data$group <- ifelse(data$fieldOfStudy %in% c("math", "infoTech", "engineering", "bioMedic"), "Exact Sciences", "Others")
+
+# Make sure the group variable is a factor with only two levels
+data$group <- factor(data$group, levels = c("Exact Sciences", "Others"))
 
 # Filter data for exact science students
-exact_science_data <- subset(data, fieldOfStudy == "math" | fieldOfStudy == "infoTech" | fieldOfStudy == "engineering" | fieldOfStudy == "bioMedic")
+exact_science_data <- subset(data, group == "Exact Sciences")
 
-# Calculate awareness score (you may need to adjust this based on your specific criteria)
-# For simplicity, let's assume the sum of scores for relevant likelyCollectedData variables
+# Filter data for other students
+other_students_data <- subset(data, group == "Others")
+
+# Calculate awareness score for exact science students
 exact_science_data$awareness_score <- rowSums(subset(exact_science_data, select = c(likelyCollectedData.camera, likelyCollectedData.gps, likelyCollectedData.mobileNum, likelyCollectedData.searches, likelyCollectedData.myData, likelyCollectedData.name, likelyCollectedData.address, likelyCollectedData.shoeSize, likelyCollectedData.mobileDeviceType, likelyCollectedData.movementData, likelyCollectedData.choices, likelyCollectedData.eMail, likelyCollectedData.video, likelyCollectedData.paymentHistory, likelyCollectedData.contacts, likelyCollectedData.thirdPartiesActivity)))
 
+# Calculate awareness score for other students
+other_students_data$awareness_score <- rowSums(subset(other_students_data, select = c(likelyCollectedData.camera, likelyCollectedData.gps, likelyCollectedData.mobileNum, likelyCollectedData.searches, likelyCollectedData.myData, likelyCollectedData.name, likelyCollectedData.address, likelyCollectedData.shoeSize, likelyCollectedData.mobileDeviceType, likelyCollectedData.movementData, likelyCollectedData.choices, likelyCollectedData.eMail, likelyCollectedData.video, likelyCollectedData.paymentHistory, likelyCollectedData.contacts, likelyCollectedData.thirdPartiesActivity)))
 
-# Calculate awareness score dynamically
-calculate_awareness_score <- function(data) {
-  # Define keywords related to Google data collection
-  google_keywords <- c("terms", "videos", "views", "voice", "purchase", "people", 
-                       "activity", "chrome", "gps", "ip", "browsing", "services", 
-                       "information", "near", "wifi", "cell", "bluetooth")
-  
-  # Initialize awareness score vector
-  awareness_scores <- numeric(nrow(data))
-  
-  # Iterate over rows of data
-  for (i in seq_along(awareness_scores)) {
-    # Convert dataCollectGuess to lowercase for case-insensitive matching
-    guess <- tolower(data$dataCollectGuess[i])
-    # Calculate awareness score based on number of matching keywords
-    awareness_scores[i] <- sum(sapply(google_keywords, function(keyword) {
-      grepl(keyword, guess)
-    }))
-  }
-  
-  return(awareness_scores)
-}
+# Calculate awareness score for all students
+data$awareness_score <- rowSums(subset(data, select = c(likelyCollectedData.camera, likelyCollectedData.gps, likelyCollectedData.mobileNum, likelyCollectedData.searches, likelyCollectedData.myData, likelyCollectedData.name, likelyCollectedData.address, likelyCollectedData.shoeSize, likelyCollectedData.mobileDeviceType, likelyCollectedData.movementData, likelyCollectedData.choices, likelyCollectedData.eMail, likelyCollectedData.video, likelyCollectedData.paymentHistory, likelyCollectedData.contacts, likelyCollectedData.thirdPartiesActivity)))
 
-# Recode fieldOfStudy to create a binary variable indicating whether the student is an exact science student
-exact_science_data$is_exact_science <- ifelse(exact_science_data$fieldOfStudy %in% c("math", "infoTech", "engineering", "bioMedic"), "Exact Science", "Other")
-other_students_data$is_exact_science <- ifelse(other_students_data$fieldOfStudy %in% c("math", "infoTech", "engineering", "bioMedic"), "Exact Science", "Other")
-
-# Convert is_exact_science to a factor with two levels
-exact_science_data$is_exact_science <- factor(exact_science_data$is_exact_science, levels = c("Exact Science", "Other"))
-other_students_data$is_exact_science <- factor(other_students_data$is_exact_science, levels = c("Exact Science", "Other"))
-
-# Combine the is_exact_science variable from both datasets into a single vector
-combined_is_exact_science <- c(as.character(exact_science_data$is_exact_science), as.character(other_students_data$is_exact_science))
-
-# Check the levels of the combined is_exact_science variable
-levels(combined_is_exact_science)
 
 # Perform t-test comparing awareness scores between exact science students and others
-t_test_result <- t.test(awareness_score ~ is_exact_science, 
+t_test_result <- t.test(awareness_score ~ group, 
                         data = rbind(exact_science_data, other_students_data))
 
 # Print t-test result
 print(t_test_result)
 
-# Perform regression analysis between age and awareness score
-regression_model <- lm(awareness_score ~ ageGroup, data = exact_science_data)
+# Perform ANOVA to compare awareness scores between "exact sciences" and "others"
+anova_result <- aov(awareness_score ~ group, data = data)
 
-# Recode ageGroup into numeric values
-exact_science_data$ageGroup <- factor(exact_science_data$ageGroup, levels = c("young", "adult", "over30"))
-exact_science_data$ageGroup <- as.numeric(recode(exact_science_data$ageGroup, "1" = "young", "2" = "adult", "3" = "over30"))
+# Print ANOVA result
+print(summary(anova_result))
 
-# Convert ageGroup column to numeric
-exact_science_data$ageGroup <- as.numeric(as.character(exact_science_data$ageGroup))
-
-# Check for missing or non-numeric values in ageGroup column
-missing_values <- sum(is.na(exact_science_data$ageGroup) | !is.numeric(exact_science_data$ageGroup))
-
-if (missing_values > 0) {
-  # Print the number of missing or non-numeric values
-  cat("Number of missing or non-numeric values in ageGroup column:", missing_values, "\n")
-  
-  # Display rows with missing or non-numeric values in ageGroup column
-  problematic_rows <- exact_science_data[is.na(exact_science_data$ageGroup) | !is.numeric(exact_science_data$ageGroup), ]
-  print(problematic_rows)
-} else {
-  # Plot the regression line
-  plot(exact_science_data$ageGroup, exact_science_data$awareness_score, xlab = "Age Group", ylab = "Awareness Score", main = "Regression Analysis: Age vs Awareness Score")
-  
-  # Add regression line to the plot
-  abline(regression_model, col = "red")
-}
+# Create boxplot to visualize awareness scores between "exact sciences" and "others"
+boxplot(awareness_score ~ group, data = data,
+        xlab = "Field of Study", ylab = "Awareness Score",
+        main = "Awareness Score Between Exact Sciences and Others")
