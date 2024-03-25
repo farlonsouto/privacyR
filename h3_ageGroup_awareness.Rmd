@@ -1,0 +1,78 @@
+# Load required libraries
+library(haven)
+library(dplyr)
+# Load required library for plotting
+library(ggplot2)
+
+# Read the CSV data file
+data <- read.csv("quest_data.csv")
+
+# Function to calculate awareness score
+calculate_awareness_score <- function(data) {
+  # Get the column names of likely collected sub-variables
+  likely_cols <- grep("^likelyCollectedData\\.", names(data), value = TRUE)
+  
+  # Initialize awareness score vector
+  awareness_score <- numeric(nrow(data))
+  
+  # Iterate over rows of data
+  for (i in seq_along(awareness_score)) {
+    # Initialize score for the current entry
+    score <- 0
+    # Iterate over sub-variables
+    for (col in likely_cols) {
+      # Add the value of the sub-variable to the score
+      score <- score + data[[col]][i]
+    }
+    # Assign the score to the corresponding entry in awareness_score
+    awareness_score[i] <- score
+  }
+  
+  return(awareness_score)
+}
+
+# Calculate awareness score for all students
+data$awareness_score <- calculate_awareness_score(data)
+
+# Recode ageGroup into four groups: teen, young, adult, and over30
+data$ageGroup <- factor(data$ageGroup, levels = c("teen", "young", "adult", "over30"))
+
+# Handle missing values in awareness_score and ageGroup
+data <- na.omit(data)
+
+# Check for missing values in awareness_score and ageGroup
+missing_values <- sum(is.na(data$awareness_score) | is.na(data$ageGroup))
+if (missing_values > 0) {
+  stop("There are missing values in awareness_score or ageGroup. Please handle missing data.")
+}
+
+# Check the unique values in ageGroup
+unique_ageGroups <- unique(data$ageGroup)
+if (!all(unique_ageGroups %in% c("teen","young", "adult", "over30"))) {
+  stop("ageGroup contains unexpected values. Ensure it only contains 'tee', 'young', 'adult' or 'over30'.")
+}
+
+# Convert ageGroup to numeric
+ageGroup_numeric <- match(data$ageGroup, c("teen","young", "adult", "over30"))
+
+# Check for NA values in ageGroup_numeric
+any_na <- any(is.na(ageGroup_numeric))
+if (any_na) {
+  stop("ageGroup_numeric contains NA values. Check the conversion from ageGroup.")
+}
+
+# Perform correlation analysis between ageGroup and awareness_score
+correlation_ageGroup <- cor.test(data$awareness_score, ageGroup_numeric)
+
+# Print correlation analysis result
+print(correlation_ageGroup)
+
+
+# Plot the data with regression line
+ggplot(data, aes(x = ageGroup_numeric, y = awareness_score)) +
+  geom_point() +  # Add points for each data point
+  geom_smooth(method = "lm", se = FALSE) +  # Add linear regression line
+  scale_x_continuous(breaks = c(1, 2, 3, 4), labels = c("teen", "young", "adult", "over30")) +  # Customize x-axis labels
+  labs(x = "Age Group", y = "Awareness Score") +  # Set axis labels
+  ggtitle("Correlation between Age Group and Awareness Score")  # Set plot title
+
