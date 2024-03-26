@@ -1,3 +1,11 @@
+setwd("/home/fsouto/ntnu/2024_spring/IT3010_metod/assignments/a2")
+
+# Load required libraries
+library(haven)
+library(dplyr)
+# Load the ggplot2 library
+library(ggplot2)
+
 # Read the CSV data file
 data <- read.csv("quest_data.csv")
 
