@@ -3,6 +3,8 @@ setwd("/home/fsouto/ntnu/2024_spring/IT3010_metod/assignments/a2")
 # Load required libraries
 library(haven)
 library(dplyr)
+# Load required library for plotting
+library(ggplot2)
 
 # Read the CSV data file
 data <- read.csv("quest_data.csv")
@@ -27,6 +29,44 @@ other_students_data$awareness_score <- rowSums(subset(other_students_data, selec
 
 # Calculate awareness score for all students
 data$awareness_score <- rowSums(subset(data, select = c(likelyCollectedData.camera, likelyCollectedData.gps, likelyCollectedData.mobileNum, likelyCollectedData.searches, likelyCollectedData.myData, likelyCollectedData.name, likelyCollectedData.address, likelyCollectedData.shoeSize, likelyCollectedData.mobileDeviceType, likelyCollectedData.movementData, likelyCollectedData.choices, likelyCollectedData.eMail, likelyCollectedData.video, likelyCollectedData.paymentHistory, likelyCollectedData.contacts, likelyCollectedData.thirdPartiesActivity)))
+
+# Check for missing values in awareness_score
+any_missing <- any(is.na(data$awareness_score))
+
+# If there are missing values, remove them and calculate the average awareness score
+if (any_missing) {
+  # Remove rows with missing awareness scores
+  data <- data[!is.na(data$awareness_score), ]
+}
+
+# Calculate mean
+mean_score <- mean(data$awareness_score)
+# Calculate standard deviation
+sd_score <- sd(data$awareness_score)
+# Calculate median
+median_score <- median(data$awareness_score)
+# Print the results
+cat("Mean:", mean_score, "\n")
+cat("Standard Deviation:", sd_score, "\n")
+cat("Median:", median_score, "\n")
+
+# Plot histogram
+ggplot(data, aes(x = awareness_score)) +
+  geom_histogram(binwidth = 0.2, fill = "skyblue", color = "black") +
+  labs(title = "Distribution of Awareness Scores",
+       x = "Awareness Score",
+       y = "Frequency") +
+  theme_minimal()
+
+# Plot boxplot
+ggplot(data, aes(y = awareness_score)) +
+  geom_boxplot(fill = "lightgreen", color = "black") +
+  labs(title = "Mean, SD and Median",
+       x = "",
+       y = "Awareness Score") +
+  theme_minimal()
+
+
 
 
 # Perform t-test comparing awareness scores between exact science students and others
