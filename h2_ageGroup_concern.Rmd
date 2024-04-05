@@ -1,5 +1,10 @@
 setwd("/home/fsouto/ntnu/2024_spring/IT3010_metod/assignments/a2")
 
+# Install the haven package
+# install.packages("haven")
+# Install the dplyr package
+# install.packages("dplyr")
+
 # Load required libraries
 library(haven)
 library(dplyr)
@@ -7,7 +12,7 @@ library(dplyr)
 library(ggplot2)
 
 # Read the CSV data file
-data <- read.csv("quest_data.csv")
+data <- read.csv("removed_non_students.csv")
 
 # Function to calculate concern score
 calculate_concern_score <- function(data) {
@@ -64,3 +69,26 @@ ggplot(data, aes(x = ageGroup_numeric, y = concern_score)) +
   scale_x_continuous(breaks = c(1, 2, 3, 4), labels = c("teen", "young", "adult", "over30")) +  # Customize x-axis labels
   labs(x = "Age Group", y = "Concern Score") +  # Set axis labels
   ggtitle("Correlation between Age Group and Concern Score")  # Set plot title
+  
+# Create a data frame for plotting
+summary_data <- data.frame(
+  measure = c("Mean", "Median", "Standard Deviation"),
+  value = c(mean_concern_score, median_concern_score, sd_concern_score)
+)
+
+# Plot the graph
+ggplot(summary_data, aes(x = measure, y = value)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(title = "Summary of Concern Score", x = NULL, y = NULL)
+
+  
+# Calculate mean, median, and standard deviation for concern_score
+mean_concern_score <- mean(data$concern_score)
+median_concern_score <- median(data$concern_score)
+sd_concern_score <- sd(data$concern_score)
+
+# Print the mean, median, and standard deviation
+cat("Mean Concern Score:", mean_concern_score, "\n")
+cat("Median Concern Score:", median_concern_score, "\n")
+cat("Standard Deviation of Concern Score:", sd_concern_score, "\n")
+

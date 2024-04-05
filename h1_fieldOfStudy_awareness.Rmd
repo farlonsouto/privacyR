@@ -7,16 +7,16 @@ library(dplyr)
 library(ggplot2)
 
 # Read the CSV data file
-data <- read.csv("quest_data.csv")
+data <- read.csv("removed_non_students.csv")
 
 # Recode fieldOfStudy to create two groups: "exact sciences" and "others"
-data$group <- ifelse(data$fieldOfStudy %in% c("math", "infoTech", "engineering", "bioMedic"), "Exact Sciences", "Others")
+data$group <- ifelse(data$fieldOfStudy %in% c("infoTech"), "IT", "Others")
 
 # Make sure the group variable is a factor with only two levels
-data$group <- factor(data$group, levels = c("Exact Sciences", "Others"))
+data$group <- factor(data$group, levels = c("IT", "Others"))
 
 # Filter data for exact science students
-exact_science_data <- subset(data, group == "Exact Sciences")
+exact_science_data <- subset(data, group == "IT")
 
 # Filter data for other students
 other_students_data <- subset(data, group == "Others")
@@ -29,6 +29,38 @@ other_students_data$awareness_score <- rowSums(subset(other_students_data, selec
 
 # Calculate awareness score for all students
 data$awareness_score <- rowSums(subset(data, select = c(likelyCollectedData.camera, likelyCollectedData.gps, likelyCollectedData.mobileNum, likelyCollectedData.searches, likelyCollectedData.myData, likelyCollectedData.name, likelyCollectedData.address, likelyCollectedData.shoeSize, likelyCollectedData.mobileDeviceType, likelyCollectedData.movementData, likelyCollectedData.choices, likelyCollectedData.eMail, likelyCollectedData.video, likelyCollectedData.paymentHistory, likelyCollectedData.contacts, likelyCollectedData.thirdPartiesActivity)))
+
+# Function to calculate concern score
+calculate_concern_score <- function(data) {
+  # Get the column names of problematic if collected sub-variables
+  problematic_cols <- grep("^problematicIfCollected\\.", names(data), value = TRUE)
+  
+  # Initialize concern score vector
+  concern_score <- numeric(nrow(data))
+  
+  # Iterate over rows of data
+  for (i in seq_along(concern_score)) {
+    # Initialize score for the current entry
+    score <- 0
+    # Iterate over sub-variables
+    for (col in problematic_cols) {
+      # Add the value of the sub-variable to the score
+      score <- score + data[[col]][i]
+    }
+    # Assign the score to the corresponding entry in concern_score
+    concern_score[i] <- score
+  }
+  
+  return(concern_score)
+}
+
+# Calculate concern score for all students
+data$concern_score <- calculate_concern_score(data)
+# Calculate concern score for all students
+exact_science_data$concern_score <- calculate_concern_score(exact_science_data)
+# Calculate concern score for all students
+other_students_data$concern_score <- calculate_concern_score(other_students_data)
+
 
 # Check for missing values in awareness_score
 any_missing <- any(is.na(data$awareness_score))
@@ -51,14 +83,14 @@ cat("Standard Deviation:", sd_score, "\n")
 cat("Median:", median_score, "\n")
 
 # Plot histogram
-ggplot(data, aes(x = awareness_score)) +
-  geom_histogram(binwidth = 0.2, fill = "skyblue", color = "black") +
-  labs(title = "Distribution of Awareness Scores",
-       x = "Awareness Score",
-       y = "Frequency") +
-  theme_minimal()
+# ggplot(data, aes(x = awareness_score)) +
+#  geom_histogram(binwidth = 0.2, fill = "skyblue", color = "black") +
+#  labs(title = "Distribution of Awareness Scores",
+#       x = "Awareness Score",
+#       y = "Frequency") +
+#  theme_minimal()
 
-# Plot boxplot
+# Plot boxplot AWARENESS
 ggplot(data, aes(y = awareness_score)) +
   geom_boxplot(fill = "lightgreen", color = "black") +
   labs(title = "Mean, SD and Median",
@@ -66,13 +98,9 @@ ggplot(data, aes(y = awareness_score)) +
        y = "Awareness Score") +
   theme_minimal()
 
-
-
-
-# Perform t-test comparing awareness scores between exact science students and others
+# Perform t-test comparing awareness scores between IT students and others
 t_test_result <- t.test(awareness_score ~ group, 
                         data = rbind(exact_science_data, other_students_data))
-
 # Print t-test result
 print(t_test_result)
 
@@ -85,4 +113,35 @@ print(summary(anova_result))
 # Create boxplot to visualize awareness scores between "exact sciences" and "others"
 boxplot(awareness_score ~ group, data = data,
         xlab = "Field of Study", ylab = "Awareness Score",
-        main = "Awareness Score Between Exact Sciences and Others")
+        main = "Awareness Score Between IT and Others")
+
+
+
+
+
+
+# Plot boxplot CONCERN
+ggplot(data, aes(y = concern_score)) +
+  geom_boxplot(fill = "lightgreen", color = "black") +
+  labs(title = "Mean, SD and Median",
+       x = "",
+       y = "Awareness Score") +
+  theme_minimal()
+  
+# Perform t-test comparing concern scores between IT students and others
+t_test_result <- t.test(concern_score ~ group, 
+                        data = rbind(exact_science_data, other_students_data))
+
+# Print t-test result
+print(t_test_result)
+
+# Perform ANOVA to compare concern scores between "exact sciences" and "others"
+anova_result <- aov(concern_score ~ group, data = data)
+
+# Print ANOVA result
+print(summary(anova_result))
+
+# Create boxplot to visualize concern scores between IT and others
+boxplot(concern_score ~ group, data = data,
+        xlab = "Field of Study", ylab = "Concern Score",
+        main = "Concern Score Between IT and Others")
